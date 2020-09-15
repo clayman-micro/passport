@@ -24,3 +24,12 @@ jobs:
 
       - name: Run tests
         run: tox
+
+      - name: Send notification to Telegram
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT }}
+          token: ${{ secrets.TELEGRAM_SECRET }}
+          args: ${{ github.repository }} tests - ${{ job.status }}
+
