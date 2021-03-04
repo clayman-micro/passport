@@ -1,5 +1,6 @@
 from typing import Dict
 
+import aiozipkin
 from aiohttp import web
 from aiohttp_micro.exceptions import (  # type: ignore
     EntityAlreadyExist,
@@ -75,22 +76,28 @@ async def register(
 )
 @validate_payload(CredentialsPayloadSchema)
 async def login(payload: Dict[str, str], request: web.Request) -> web.Response:
-    use_case = LoginUseCase(app=request.app)
+    tracer = request.app[aiozipkin.APP_AIOZIPKIN_KEY]
+    span = aiozipkin.request_span(request)
+    with tracer.new_child(span.context) as child_span:
+        use_case = LoginUseCase(app=request.app)
 
-    try:
-        user = await use_case.execute(
-            email=payload["email"], password=payload["password"]
-        )
-    except Forbidden:
-        raise web.HTTPForbidden()
-    except EntityNotFound:
-        raise web.HTTPNotFound()
+        try:
+            user = await use_case.execute(
+                email=payload["email"], password=payload["password"]
+            )
+        except Forbidden:
+            raise web.HTTPForbidden()
+        except EntityNotFound:
+            raise web.HTTPNotFound()
 
-    config = request.app["config"]
-    generator = TokenGenerator(private_key=config.tokens.private_key)
+        config = request.app["config"]
+        generator = TokenGenerator(private_key=config.tokens.private_key)
 
-    schema = UserResponseSchema()
-    response = schema.dump({"user": user})
+        schema = UserResponseSchema()
+        response = schema.dump({"user": user})
+
+        child_span.name("Login user")
+        child_span.tag("user_id", user.key)
 
     return json_response(
         response,
