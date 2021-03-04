@@ -1,6 +1,8 @@
 .PHONY: build clean clean-test clean-pyc clean-build
-NAME	:= ghcr.io/clayman-micro/passport
+NAME := ghcr.io/clayman-micro/passport
 VERSION ?= latest
+HOST ?= 0.0.0.0
+PORT ?= 5000
 
 
 clean: clean-build clean-image clean-pyc clean-test
@@ -35,7 +37,7 @@ lint:
 	poetry run mypy passport tests
 
 run:
-	poetry run python3 -m passport --conf-dir=./conf server run -t develop -t 'traefik.enable=true' -t 'traefik.http.routers.passport.rule=Host(`passport.dev.clayman.pro`)' -t 'traefik.http.routers.passport.entrypoints=web' -t 'traefik.http.routers.passport.service=passport' -t 'traefik.http.routers.passport.middlewares=passport-redirect@consulcatalog' -t 'traefik.http.routers.passport-secure.rule=Host(`passport.dev.clayman.pro`)' -t 'traefik.http.routers.passport-secure.entrypoints=websecure' -t 'traefik.http.routers.passport-secure.service=passport' -t 'traefik.http.routers.passport-secure.tls=true' -t 'traefik.http.middlewares.passport-redirect.redirectscheme.scheme=https' -t 'traefik.http.middlewares.passport-redirect.redirectscheme.permanent=true' -t 'traefik.http.middlewares.passport-cors.headers.accesscontrolallowcredentials=true' -t 'traefik.http.middlewares.passport-cors.headers.accesscontrolallowheaders=Content-Type,X-Access-Token,X-Refresh-Token' -t 'traefik.http.middlewares.passport-cors.headers.accesscontrolexposeheaders=Content-Type,X-Access-Token,X-Refresh-Token' -t 'traefik.http.middlewares.passport-cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE' -t 'traefik.http.middlewares.passport-cors.headers.accesscontrolalloworiginlist=https://passport.dev.clayman.pro,http://localhost:3000' -t 'traefik.http.middlewares.passport-cors.headers.accesscontrolmaxage=100' -t 'traefik.http.middlewares.passport-cors.headers.addvaryheader=true' -t 'traefik.http.routers.passport-secure.middlewares=passport-cors@consulcatalog'
+	poetry run python3 -m passport --debug --conf-dir=./conf server run --host=$(HOST) --port=$(PORT) -t develop
 
 test:
 	py.test
