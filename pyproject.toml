@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "passport"
-version = "2.7.0"
+version = "2.8.0"
 description = "User identification service"
 authors = ["Kirill Sumorokov <sumorokov.k@gmail.com>"]
 license = "MIT"
