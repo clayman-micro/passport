@@ -37,7 +37,7 @@ lint:
 	poetry run mypy passport tests
 
 run:
-	poetry run python3 -m passport --debug --conf-dir=./conf server run --host=$(HOST) --port=$(PORT) -t develop
+	poetry run python3 -m passport --debug --conf-dir=./conf server run --host=$(HOST) --port=$(PORT)
 
 test:
 	py.test

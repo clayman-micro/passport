@@ -42,7 +42,7 @@ async def login(payload: Dict[str, str], request: web.Request) -> web.Response:
         value=session_key,
         max_age=config.sessions.expire * 24 * 60 * 60,
         domain=config.sessions.domain,
-        httponly="True",
+        httponly=True,
     )
 
     return response

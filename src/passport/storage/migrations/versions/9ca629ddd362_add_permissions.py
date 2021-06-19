@@ -5,8 +5,8 @@ Revises: 615677fb3a4f
 Create Date: 2020-09-09 23:37:57.555057
 
 """
-import sqlalchemy as sa
-from alembic import op
+import sqlalchemy as sa  # type: ignore
+from alembic import op  # type: ignore
 
 # revision identifiers, used by Alembic.
 revision = "9ca629ddd362"
@@ -28,15 +28,11 @@ def upgrade():
         "user_permissions",
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("permission_id", sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ["permission_id"], ["permissions.id"], ondelete="CASCADE"
-        ),
+        sa.ForeignKeyConstraint(["permission_id"], ["permissions.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("user_id", "permission_id"),
     )
-    op.add_column(
-        "users", sa.Column("is_superuser", sa.Boolean(), nullable=True)
-    )
+    op.add_column("users", sa.Column("is_superuser", sa.Boolean(), nullable=True))
 
 
 def downgrade():

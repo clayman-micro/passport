@@ -25,7 +25,7 @@ class TokenGenerator:
             },
             self._private_key,
             algorithm="RS256",
-        ).decode("utf-8")
+        )
 
 
 class TokenDecoder:
@@ -36,7 +36,7 @@ class TokenDecoder:
 
     def decode(self, token: str, token_type: TokenType = TokenType.access) -> User:
         try:
-            token_data = jwt.decode(token, self._public_key, issuer="urn:passport", algorithms="RS256",)
+            token_data = jwt.decode(token, self._public_key, issuer="urn:passport", algorithms=["RS256"])
         except jwt.ExpiredSignatureError:
             raise TokenExpired()
         except jwt.DecodeError:

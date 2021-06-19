@@ -7,8 +7,8 @@ Create Date: 2020-09-09 21:36:41.102344
 
 """
 
-import sqlalchemy
-from alembic import op
+import sqlalchemy  # type: ignore
+from alembic import op  # type: ignore
 
 
 # revision identifiers, used by Alembic.
@@ -22,12 +22,8 @@ def upgrade():
     op.create_table(
         "users",
         sqlalchemy.Column("id", sqlalchemy.Integer(), nullable=False),
-        sqlalchemy.Column(
-            "email", sqlalchemy.String(length=255), nullable=False
-        ),
-        sqlalchemy.Column(
-            "password", sqlalchemy.String(length=255), nullable=False
-        ),
+        sqlalchemy.Column("email", sqlalchemy.String(length=255), nullable=False),
+        sqlalchemy.Column("password", sqlalchemy.String(length=255), nullable=False),
         sqlalchemy.Column("is_active", sqlalchemy.Boolean(), nullable=True),
         sqlalchemy.Column("last_login", sqlalchemy.DateTime(), nullable=True),
         sqlalchemy.Column("created_on", sqlalchemy.DateTime(), nullable=True),

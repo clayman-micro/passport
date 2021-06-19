@@ -3,8 +3,8 @@ from __future__ import with_statement
 from logging.config import fileConfig
 
 from aiohttp_storage.storage import metadata
-from alembic import context
-from sqlalchemy import engine_from_config, pool
+from alembic import context  # type: ignore
+from sqlalchemy import engine_from_config, pool  # type: ignore
 
 from passport.storage.sessions import sessions  # noqa: F401
 from passport.storage.users import (  # noqa: F401
@@ -56,9 +56,7 @@ def run_migrations_online():
 
     """
     engine = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
+        config.get_section(config.config_ini_section), prefix="sqlalchemy.", poolclass=pool.NullPool,
     )
 
     connection = engine.connect()
