@@ -13,10 +13,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-aiohttp-metrics = {git = "https://github.com/clayman083/aiohttp-metrics.git", rev = "v0.1.2"}
-aiohttp-micro = {git = "https://github.com/clayman083/aiohttp-micro.git", rev = "v0.4.1"}
+aiohttp-micro = {git = "https://github.com/clayman083/aiohttp-micro.git", rev = "v0.4.3"}
 aiohttp-storage = {git = "https://github.com/clayman083/aiohttp-storage.git", rev = "v0.1.2"}
-aiohttp-openapi = {git = "https://github.com/clayman083/aiohttp-openapi.git", rev = "v0.1.1"}
 passlib = "1.7.4"
 pyjwt = {extras = ["crypto"], version = "2.0.1"}
 python = "^3.8"

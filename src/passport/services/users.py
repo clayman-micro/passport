@@ -1,4 +1,4 @@
-from aiohttp_micro.exceptions import EntityAlreadyExist  # type: ignore
+from aiohttp_micro.core.exceptions import EntityAlreadyExist  # type: ignore
 
 from passport.domain import User
 from passport.domain.storage import Storage

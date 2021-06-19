@@ -2,10 +2,10 @@ from pathlib import Path
 
 import click
 import uvloop  # type: ignore
-from aiohttp_micro.management.server import server  # type: ignore
+from aiohttp_micro import ConsulConfig
+from aiohttp_micro.cli.server import server  # type: ignore
 from aiohttp_storage.management.storage import storage  # type: ignore
 from config import (  # type: ignore
-    ConsulConfig,
     EnvValueProvider,
     FileValueProvider,
     load,
@@ -33,20 +33,9 @@ def cli(ctx, conf_dir: str = None, debug: bool = False) -> None:
         defaults={
             "consul": consul_config,
             "debug": debug,
-            "db": {
-                "user": "passport",
-                "password": "passport",
-                "database": "passport",
-            },
-            "tokens": {
-                "access_token_expire": 900,
-                "refresh_token_expire": 43200,
-            },
-            "sessions": {
-                "domain": ".clayman.pro",
-                "cookie": "session",
-                "expire": 30,
-            },
+            "db": {"user": "passport", "password": "passport", "database": "passport"},
+            "tokens": {"access_token_expire": 900, "refresh_token_expire": 43200},
+            "sessions": {"domain": ".clayman.pro", "cookie": "session", "expire": 30},
         }
     )
     load(config, providers=[FileValueProvider(conf_path), EnvValueProvider()])

@@ -57,9 +57,7 @@ async def passport_ctx(app: web.Application) -> AsyncGenerator[None, None]:
     async with ClientSession() as session:
         async with session.get(url, ssl=verify_ssl) as resp:
             if resp.status != 200:
-                app["logger"].error(
-                    "Fetch passport keys failed", status=resp.status
-                )
+                app["logger"].error("Fetch passport keys failed", status=resp.status)
                 raise RuntimeError("Could not fetch passport keys")
 
             keys = await resp.json()

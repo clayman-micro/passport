@@ -14,10 +14,7 @@ sessions = sqlalchemy.Table(
     sqlalchemy.Column("key", sqlalchemy.String(44), primary_key=True),
     sqlalchemy.Column("expires", sqlalchemy.DateTime, default=datetime.utcnow),
     sqlalchemy.Column(
-        "user",
-        sqlalchemy.Integer,
-        sqlalchemy.ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
+        "user", sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id", ondelete="CASCADE"), nullable=False,
     ),
 )
 
@@ -27,20 +24,15 @@ class SessionDBStorage(SessionRepo):
         self._database = database
 
     async def fetch(self, key: str) -> int:
-        query = sqlalchemy.select([sessions.c.user]).where(
-            sessions.c.key == key
-        )
+        query = sqlalchemy.select([sessions.c.user]).where(sessions.c.key == key)
         user_key = await self._database.fetch_val(query)
 
         return user_key
 
     async def add(self, user: User, key: str, expires: datetime) -> None:
         await self._database.execute(
-            sessions.insert(),
-            values={"key": key, "user": user.key, "expires": expires},
+            sessions.insert(), values={"key": key, "user": user.key, "expires": expires},
         )
 
     async def remove(self, key: str) -> None:
-        await self._database.execute(
-            sessions.delete().where(sessions.c.key == key)
-        )
+        await self._database.execute(sessions.delete().where(sessions.c.key == key))

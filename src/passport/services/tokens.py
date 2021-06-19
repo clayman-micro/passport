@@ -12,12 +12,7 @@ class TokenGenerator:
     def __init__(self, private_key: str) -> None:
         self._private_key = private_key
 
-    def generate(
-        self,
-        user: User,
-        token_type: TokenType = TokenType.access,
-        expire: int = 600,
-    ) -> str:
+    def generate(self, user: User, token_type: TokenType = TokenType.access, expire: int = 600,) -> str:
         now = datetime.utcnow()
 
         return jwt.encode(
@@ -39,16 +34,9 @@ class TokenDecoder:
     def __init__(self, public_key: str) -> None:
         self._public_key = public_key
 
-    def decode(
-        self, token: str, token_type: TokenType = TokenType.access
-    ) -> User:
+    def decode(self, token: str, token_type: TokenType = TokenType.access) -> User:
         try:
-            token_data = jwt.decode(
-                token,
-                self._public_key,
-                issuer="urn:passport",
-                algorithms="RS256",
-            )
+            token_data = jwt.decode(token, self._public_key, issuer="urn:passport", algorithms="RS256",)
         except jwt.ExpiredSignatureError:
             raise TokenExpired()
         except jwt.DecodeError:
@@ -65,6 +53,4 @@ class TokenDecoder:
         else:
             raise BadToken()
 
-        return User(
-            key=user_key, email=token_data["user"].get("email", "")
-        )  # type: ignore
+        return User(key=user_key, email=token_data["user"].get("email", ""))  # type: ignore

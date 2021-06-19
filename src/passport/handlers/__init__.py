@@ -1,37 +1,14 @@
 import functools
 
 from aiohttp import web
-from aiohttp_micro.exceptions import EntityNotFound  # type: ignore
-from aiohttp_micro.schemas import EntitySchema  # type: ignore
-from aiohttp_openapi import Parameter, ParameterIn  # type: ignore
+from aiohttp_micro.core.exceptions import EntityNotFound  # type: ignore
+from aiohttp_micro.core.schemas import EntitySchema  # type: ignore
 from marshmallow import fields, Schema
 
 from passport.domain import User
 from passport.exceptions import BadToken, TokenExpired
 from passport.services.tokens import TokenDecoder
 from passport.storage import DBStorage
-
-
-AccessTokenParameter = Parameter(
-    in_=ParameterIn.header,
-    name="X-ACCESS-TOKEN",
-    schema={"type": "string"},
-    required=True,
-)
-
-RefreshTokenParameter = Parameter(
-    in_=ParameterIn.header,
-    name="X-REFRESH-TOKEN",
-    schema={"type": "string"},
-    required=True,
-)
-
-SessionParameter = Parameter(
-    in_=ParameterIn.cookies,
-    name="session",
-    schema={"type": "string"},
-    required=True,
-)
 
 
 class UserSchema(EntitySchema):

@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from typing import Dict
 
 from aiohttp import web
-from aiohttp_micro.exceptions import EntityNotFound  # type: ignore
-from aiohttp_micro.handlers import (  # type: ignore
+from aiohttp_micro.core.exceptions import EntityNotFound  # type: ignore
+from aiohttp_micro.web.handlers import (  # type: ignore
     json_response,
     validate_payload,
 )
@@ -55,8 +55,6 @@ async def logout(request: web.Request) -> web.Response:
     config = request.app["config"]
 
     redirect = web.HTTPFound(location="/")
-    redirect.del_cookie(
-        name=config.sessions.cookie, domain=config.sessions.domain
-    )
+    redirect.del_cookie(name=config.sessions.cookie, domain=config.sessions.domain)
 
     raise redirect

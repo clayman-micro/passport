@@ -19,9 +19,7 @@ class UsersRepo(Protocol):
     async def add_permission(self, user: User, permission: Permission) -> None:
         ...
 
-    async def remove_permission(
-        self, user: User, permission: Permission
-    ) -> None:
+    async def remove_permission(self, user: User, permission: Permission) -> None:
         ...
 
     async def save_user(self, email: str, password: str) -> int:

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional
 
-from aiohttp_micro.entities import Entity  # type: ignore
+from aiohttp_micro.core.entities import Entity  # type: ignore
 from passlib.handlers.pbkdf2 import pbkdf2_sha512  # type: ignore
 
 
@@ -24,9 +24,7 @@ class User(Entity):
     permissions: List[Permission] = field(default_factory=list)
 
     def set_password(self, password: str) -> None:
-        self.password = pbkdf2_sha512.encrypt(
-            password, rounds=10000, salt_size=10
-        )
+        self.password = pbkdf2_sha512.encrypt(password, rounds=10000, salt_size=10)
 
     def verify_password(self, password: str) -> bool:
         try:
