@@ -60,3 +60,4 @@ ansible/.credentials
 conf/*
 develop.yml
 .vscode/tags
+kube.*
