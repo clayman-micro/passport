@@ -8,10 +8,7 @@ from aiohttp_micro import (  # type: ignore
     setup_logging,
     setup_metrics,
 )
-from aiohttp_storage import (  # type: ignore
-    setup as setup_storage,
-    StorageConfig,
-)
+from aiohttp_storage import setup as setup_storage  # type: ignore
 
 from passport.handlers import auth as auth_endpoints
 from passport.handlers.api import (
@@ -19,6 +16,22 @@ from passport.handlers.api import (
     tokens as token_endpoints,
     users as user_endpoints,
 )
+
+
+class StorageConfig(config.PostgresConfig):
+    host = config.StrField(default="localhost", env="POSTGRES_HOST")
+    port = config.IntField(default=5432, env="POSTGRES_PORT")
+    user = config.StrField(default="postgres", path="postgres-user", env="POSTGRES_USER")
+    password = config.StrField(default="postgres", path="postgres-password", env="POSTGRES_PASSWORD")
+    database = config.StrField(default="postgres", env="POSTGRES_DATABASE")
+    min_pool_size = config.IntField(default=1, env="POSTGRES_MIN_POOL_SIZE")
+    max_pool_size = config.IntField(default=2, env="POSTGRES_MAX_POOL_SIZE")
+
+    @property
+    def uri(self) -> str:
+        return "postgresql://{user}:{password}@{host}:{port}/{database}".format(
+            user=self.user, password=self.password, host=self.host, port=self.port, database=self.database,
+        )
 
 
 class SessionConfig(config.Config):
