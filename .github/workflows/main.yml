@@ -60,7 +60,7 @@ jobs:
 
       - name: Get coverage report
         env:
-          TOXENV: report
+          TOXENV: coverage
         run: tox
 
       - name: Send notification to Telegram
