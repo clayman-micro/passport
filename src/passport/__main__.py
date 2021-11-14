@@ -2,14 +2,9 @@ from pathlib import Path
 
 import click
 import uvloop  # type: ignore
-from aiohttp_micro import ConsulConfig
 from aiohttp_micro.cli.server import server  # type: ignore
 from aiohttp_storage.management.storage import storage  # type: ignore
-from config import (  # type: ignore
-    EnvValueProvider,
-    FileValueProvider,
-    load,
-)
+from config import EnvValueProvider, FileValueProvider, load  # type: ignore
 
 from passport.app import AppConfig, init
 
@@ -26,12 +21,8 @@ def cli(ctx, conf_dir: str = None, debug: bool = False) -> None:
     else:
         conf_path = Path.cwd()
 
-    consul_config = ConsulConfig()
-    load(consul_config, providers=[EnvValueProvider()])
-
     config = AppConfig(
         defaults={
-            "consul": consul_config,
             "debug": debug,
             "db": {"user": "passport", "password": "passport", "database": "passport"},
             "tokens": {"access_token_expire": 900, "refresh_token_expire": 43200},
