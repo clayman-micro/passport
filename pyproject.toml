@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "passport"
-version = "2.10.0"
+version = "2.11.0-alpha.0"
 description = "User identification service"
 authors = ["Kirill Sumorokov <sumorokov.k@gmail.com>"]
 license = "MIT"
@@ -13,13 +13,16 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-aiohttp-micro = {git = "https://github.com/clayman083/aiohttp-micro.git", rev = "v0.6.0"}
+aiohttp-micro = {git = "https://github.com/clayman-micro/aiohttp-micro.git", rev = "v0.7.0"}
 aiohttp-storage = {git = "https://github.com/clayman083/aiohttp-storage.git", rev = "v0.2.0"}
 passlib = "1.7.4"
 pyjwt = {extras = ["crypto"], version = "2.0.1"}
 python = "^3.10"
 
 [tool.poetry.dev-dependencies]
+ansible = "^4.8.0"
+ansible-lint = "^5.2.1"
+ansible-modules-hashivault = "^4.6.4"
 black = "^19.10b0"
 coverage = "5.5"
 faker = "*"
@@ -38,6 +41,3 @@ pytest-postgres = "*"
 rope = "*"
 ipython = "*"
 types-click = "^7.1.2"
-ansible-lint = "^5.2.1"
-ansible = "^4.8.0"
-ansible-modules-hashivault = "^4.6.4"
