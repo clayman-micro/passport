@@ -12,7 +12,7 @@ def config():
         defaults={
             "consul": {"host": "localhost", "port": 8500},
             "debug": True,
-            "db": {"user": "passport", "password": "passport", "database": "passport",},
+            "db": {"user": "passport", "password": "passport", "database": "passport"},
             "tokens": {
                 "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDBqkP6h/7LMOAaWuVAqjPcrOdUCiMhyykbMaDji8odBKtCam1MyBxq1I87LFiAbHx7r5biBMUC/nyTzPiYF5II+g4MDLgV5S8/6uTmtCL40FsuIOClFPqbAiitvRFYDuBTJx3w1Fr4zWWIVtaUFqer5nAsnr4sovOG+zRVtfXJ8w==",  # noqa
                 "private_key": """

@@ -60,7 +60,14 @@ jobs:
       - name: Install requirements
         run: pip install poetry tox
 
-      - name: Run tests
+      - name: Run unit tests
+        env:
+          TOXENV: tests
+        run: tox
+
+      - name: Get coverage report
+        env:
+          TOXENV: report
         run: tox
 
       - name: Send notification to Telegram
