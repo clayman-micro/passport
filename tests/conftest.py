@@ -12,11 +12,7 @@ def config():
         defaults={
             "consul": {"host": "localhost", "port": 8500},
             "debug": True,
-            "db": {
-                "user": "passport",
-                "password": "passport",
-                "database": "passport",
-            },
+            "db": {"user": "passport", "password": "passport", "database": "passport",},
             "tokens": {
                 "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDBqkP6h/7LMOAaWuVAqjPcrOdUCiMhyykbMaDji8odBKtCam1MyBxq1I87LFiAbHx7r5biBMUC/nyTzPiYF5II+g4MDLgV5S8/6uTmtCL40FsuIOClFPqbAiitvRFYDuBTJx3w1Fr4zWWIVtaUFqer5nAsnr4sovOG+zRVtfXJ8w==",  # noqa
                 "private_key": """
@@ -43,7 +39,7 @@ oAvGVHdn+B1JJBkTJccu9hOAWjyXX5C2QuuC/fNKmsqxyQ==
     return conf
 
 
-@pytest.yield_fixture(scope="function")
+@pytest.fixture(scope="function")
 def app(pg_server, config):
     config.db.host = pg_server["params"]["host"]
     config.db.port = pg_server["params"]["port"]
@@ -57,7 +53,7 @@ def app(pg_server, config):
         yield app
 
 
-@pytest.yield_fixture(scope="function")
+@pytest.fixture(scope="function")
 async def prepared_app(app):
     runner = web.AppRunner(app)
     await runner.setup()

@@ -6,10 +6,51 @@ on:
       - v*
 
 jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: Install requirements
+        # Устанавливаем зависимости
+        run: pip install poetry tox
+
+      - name: Run flake8
+        env:
+          TOXENV: flake8
+        run: tox
+
+      - name: Run mypy
+        env:
+          TOXENV: mypy
+        run: tox
+        continue-on-error: true
+
+      - name: Send notification to Telegram
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT }}
+          token: ${{ secrets.TELEGRAM_SECRET }}
+          args: ${{ github.repository }} linters for version `${{ steps.vars.outputs.tag }}` - ${{ job.status }}
+
   tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
       - uses: actions/setup-python@v1
         with:
@@ -22,10 +63,6 @@ jobs:
       - name: Run tests
         run: tox
 
-      - name: Set output
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-
       - name: Send notification to Telegram
         if: always()
         uses: appleboy/telegram-action@master
@@ -35,7 +72,7 @@ jobs:
           args: ${{ github.repository }} tests for version `${{ steps.vars.outputs.tag }}` - ${{ job.status }}
 
   build:
-    needs: [tests]
+    needs: [linter, tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -71,7 +108,9 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_CHAT }}
           token: ${{ secrets.TELEGRAM_SECRET }}
-          args: ${{ github.repository }} build version `${{ steps.vars.outputs.tag }}` - ${{ job.status }}
+          args: |
+            ${{ github.repository }} build version `${{ steps.vars.outputs.tag }}` - ${{ job.status }}
+            Image `ghcr.io/clayman-micro/passport:${{ steps.vars.outputs.tag }}` ready to use
 
   # deploy:
   #   needs: [build]
