@@ -1,56 +1,15 @@
 import os
 
-import config  # type: ignore
 from aiohttp import web
-from aiohttp_micro import (  # type: ignore
-    AppConfig as BaseConfig,
-    setup as setup_micro,
-    setup_logging,
-    setup_metrics,
-)
+from aiohttp_micro import setup as setup_micro
+from aiohttp_micro import setup_logging, setup_metrics
 from aiohttp_storage import setup as setup_storage  # type: ignore
 
+from passport.config import AppConfig
 from passport.handlers import auth as auth_endpoints
-from passport.handlers.api import (
-    keys,
-    tokens as token_endpoints,
-    users as user_endpoints,
-)
-
-
-class StorageConfig(config.PostgresConfig):
-    host = config.StrField(default="localhost", env="POSTGRES_HOST")
-    port = config.IntField(default=5432, env="POSTGRES_PORT")
-    user = config.StrField(default="postgres", path="postgres-user", env="POSTGRES_USER")
-    password = config.StrField(default="postgres", path="postgres-password", env="POSTGRES_PASSWORD")
-    database = config.StrField(default="postgres", env="POSTGRES_DATABASE")
-    min_pool_size = config.IntField(default=1, env="POSTGRES_MIN_POOL_SIZE")
-    max_pool_size = config.IntField(default=2, env="POSTGRES_MAX_POOL_SIZE")
-
-    @property
-    def uri(self) -> str:
-        return "postgresql://{user}:{password}@{host}:{port}/{database}".format(
-            user=self.user, password=self.password, host=self.host, port=self.port, database=self.database,
-        )
-
-
-class SessionConfig(config.Config):
-    domain = config.StrField(env="SESSION_DOMAIN")
-    cookie = config.StrField(default="session", env="SESSION_COOKIE")
-    expire = config.IntField(default=30, env="SESSION_EXPIRE")
-
-
-class TokenConfig(config.Config):
-    access_token_expire = config.IntField(default=900, env="ACCESS_TOKEN_EXPIRE")
-    refresh_token_expire = config.IntField(default=43200, env="REFRESH_TOKEN_EXPIRE")
-    private_key = config.StrField(path="passport.key", env="TOKEN_PRIVATE_KEY")
-    public_key = config.StrField(path="passport.key.pub", env="TOKEN_PUBLIC_KEY")
-
-
-class AppConfig(BaseConfig):
-    db = config.NestedField[StorageConfig](StorageConfig)
-    sessions = config.NestedField[SessionConfig](SessionConfig)
-    tokens = config.NestedField[TokenConfig](TokenConfig)
+from passport.handlers.api import keys
+from passport.handlers.api import tokens as token_endpoints
+from passport.handlers.api import users as user_endpoints
 
 
 def init(app_name: str, config: AppConfig) -> web.Application:
