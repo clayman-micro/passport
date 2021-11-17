@@ -58,8 +58,6 @@ class VaultProvider(config.ValueProvider):
         self.client = hvac.Client(url=config.host)
         self.mount_point = mount_point
 
-        print(config.__dict__)
-
         if config.auth_method == "approle":
             self.client.auth.approle.login(role_id=config.role_id, secret_id=config.secret_id)
         elif config.auth_method == "kubernetes":
