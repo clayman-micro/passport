@@ -65,7 +65,7 @@ class VaultProvider(config.ValueProvider):
             with path.open("r") as fp:
                 token = fp.read()
 
-            self.client.auth_kubernetes(config.service_name, token)
+            self.client.auth.kubernetes.login(role=config.service_name, jwt=token)
 
     def load(self, field: Field) -> Optional[str]:
         value = None
