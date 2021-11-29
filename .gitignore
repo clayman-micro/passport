@@ -61,3 +61,7 @@ conf/*
 develop.yml
 .vscode/tags
 kube.*
+
+
+# Ignore DevSpace cache and log folder
+.devspace/
