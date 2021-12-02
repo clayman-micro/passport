@@ -59,5 +59,5 @@ deploy:
 		-e VAULT_ADDR=$(VAULT_ADDR) \
 		-e VAULT_ROLE_ID=$(VAULT_ROLE_ID) \
 		-e VAULT_SECRET_ID=$(VAULT_SECRET_ID) \
-		ghcr.io/clayman-micro/action-deploy -i ansible/inventory ansible/deploy.yml
+		ghcr.io/clayman-micro/action-deploy:v2.0.0 -i ansible/inventory ansible/deploy.yml
 
