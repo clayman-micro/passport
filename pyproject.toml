@@ -16,7 +16,7 @@ packages = [
 aiohttp-micro = {git = "https://github.com/clayman-micro/aiohttp-micro.git", rev = "v0.7.0"}
 aiohttp-storage = {git = "https://github.com/clayman083/aiohttp-storage.git", rev = "v0.2.0"}
 passlib = "1.7.4"
-pyjwt = {extras = ["crypto"], version = "2.0.1"}
+pyjwt = {extras = ["crypto"], version = "2.4.0"}
 python = "^3.10"
 hvac = "0.11.2"
 
