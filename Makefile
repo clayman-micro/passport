@@ -1,11 +1,12 @@
-.PHONY: build clean clean-test clean-pyc clean-build
-NAME := ghcr.io/clayman-micro/passport
-VERSION ?= latest
-HOST ?= 0.0.0.0
-PORT ?= 5000
+.PHONY: build clean tests
 
+NAME		:= ghcr.io/clayman-micro/passport
+VERSION		?= latest
+NAMESPACE 	?= micro
+HOST 		?= 0.0.0.0
+PORT 		?= 5000
 
-clean: clean-build clean-image clean-pyc clean-test
+clean: clean-build clean-pyc clean-test
 
 clean-build:
 	rm -fr build/
@@ -13,9 +14,6 @@ clean-build:
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
-
-clean-image:
-	docker images -qf dangling=true | xargs docker rmi
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -32,32 +30,49 @@ clean-test:
 install: clean
 	poetry install
 
-lint:
-	poetry run flake8 passport tests
-	poetry run mypy passport tests
+format:
+	poetry run ruff --select I --fix src/passport tests
+	poetry run black src/passport tests
+
+check_black:
+	@echo Check project with Black formatter.
+	poetry run black --check src/passport tests
+
+check_mypy:
+	@echo Check project with Mypy typechecker.
+	poetry run mypy src/passport tests
+
+check_ruff:
+	@echo Check project with Ruff linter.
+	poetry run ruff --show-source --no-fix src/passport tests
+
+lint: check_black check_ruff check_mypy
 
 run:
-	poetry run python3 -m passport --debug --conf-dir=./conf server run --host=$(HOST) --port=$(PORT)
+	poetry run python3 -m passport --debug server run --host=$(HOST) --port=$(PORT)
 
-test:
-	py.test
-
-test-all:
-	tox -- --pg-image=postgres:12-alpine
+tests:
+	poetry run pytest
 
 build:
 	docker build -t ${NAME} .
 	docker tag ${NAME} ${NAME}:$(VERSION)
 
-publish: build
+publish:
 	docker login -u $(DOCKER_USER) -p $(DOCKER_PASS) ghcr.io
 	docker push ${NAME}
 
 deploy:
-	docker run --rm -it -v ${PWD}:/github/workspace --workdir /github/workspace \
-		-e PASSPORT_VERSION=$(VERSION) \
-		-e VAULT_ADDR=$(VAULT_ADDR) \
-		-e VAULT_ROLE_ID=$(VAULT_ROLE_ID) \
-		-e VAULT_SECRET_ID=$(VAULT_SECRET_ID) \
-		ghcr.io/clayman-micro/action-deploy:v2.0.0 -i ansible/inventory ansible/deploy.yml
-
+	helm upgrade passport ../helm-chart/charts/micro --install --force \
+		--namespace ${NAMESPACE} \
+		--set image.repository=${NAME} \
+		--set image.pullPolicy=Always \
+		--set image.tag=$(VERSION) \
+		--set replicas=$(REPLICAS) \
+		--set serviceAccount.name=micro \
+		--set imagePullSecrets[0].name=ghcr \
+		--set ingress.enabled=false \
+		--set ingress.rules={"Host(\`$(DOMAIN)\`)"} \
+		--set migrations.enabled=false \
+		--set livenessProbe.enabled=true \
+		--set readinessProbe.enabled=true
