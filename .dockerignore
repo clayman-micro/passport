@@ -10,6 +10,5 @@
 .venv
 *.egg-info
 build
-client
 dist
 tests
